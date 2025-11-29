@@ -17,6 +17,7 @@
     "pack": "npm run build && electron-builder --dir",
     "dist": "npm run prepare-template && npm run build && electron-builder",
     "build:win": "npm run prepare-template && npm run build && electron-builder --win",
+    "build:win-ci": "npm run build && electron-builder --win",
     "build:mac": "npm run prepare-template && npm run build && electron-builder --mac",
     "build:linux": "npm run prepare-template && npm run build && electron-builder --linux",
     "build:all": "npm run prepare-template && npm run build && electron-builder -mwl",

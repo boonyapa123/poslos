@@ -22,10 +22,10 @@ jobs:
     
     - name: Download database template
       run: |
-        curl -L -o pos-template.db https://github.com/boonyapa123/poslos/releases/download/v1.0.0-data/pos-template.db || echo "Database not found, will create empty"
+        curl -L -o pos-template.db https://github.com/boonyapa123/poslos/releases/download/v1.0.0-data/pos-template.db
     
     - name: Build Windows installer
-      run: npm run build:win
+      run: npm run build:win-ci
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
