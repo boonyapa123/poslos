@@ -1,0 +1,5 @@
+# This file keeps the build directory in git
+# Place your icon files here:
+# - icon.ico (Windows)
+# - icon.icns (macOS)
+# - icons/ folder with PNG files (Linux)

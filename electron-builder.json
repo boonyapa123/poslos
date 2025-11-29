@@ -1,0 +1,116 @@
+{
+  "appId": "com.poslos.app",
+  "productName": "POS System",
+  "copyright": "Copyright © 2025",
+  "asar": true,
+  "asarUnpack": [
+    "node_modules/sqlite3/**/*",
+    "node_modules/better-sqlite3/**/*"
+  ],
+  "directories": {
+    "output": "dist-electron",
+    "buildResources": "build"
+  },
+  "files": [
+    "dist/**/*",
+    "package.json",
+    "node_modules/**/*"
+  ],
+  "extraResources": [
+    {
+      "from": "ส่งข้อมูลPOS.xlsx",
+      "to": "ส่งข้อมูลPOS.xlsx",
+      "filter": ["**/*"]
+    },
+    {
+      "from": "pos-template.db",
+      "to": "pos-template.db",
+      "filter": ["**/*"]
+    }
+  ],
+  "extraMetadata": {
+    "note": "Database template (pos-template.db) is included in build. On first run, it will be copied to user data folder."
+  },
+  "mac": {
+    "category": "public.app-category.business",
+    "icon": "build/icon.icns",
+    "target": [
+      {
+        "target": "dmg",
+        "arch": ["x64", "arm64"]
+      }
+    ],
+    "hardenedRuntime": true,
+    "gatekeeperAssess": false,
+    "entitlements": "build/entitlements.mac.plist",
+    "entitlementsInherit": "build/entitlements.mac.plist"
+  },
+  "dmg": {
+    "contents": [
+      {
+        "x": 130,
+        "y": 220
+      },
+      {
+        "x": 410,
+        "y": 220,
+        "type": "link",
+        "path": "/Applications"
+      }
+    ],
+    "window": {
+      "width": 540,
+      "height": 380
+    }
+  },
+  "win": {
+    "target": [
+      {
+        "target": "portable",
+        "arch": ["x64"]
+      },
+      {
+        "target": "zip",
+        "arch": ["x64"]
+      }
+    ]
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "allowElevation": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "POS System",
+    "perMachine": false,
+    "runAfterFinish": true
+  },
+  "linux": {
+    "icon": "build/icons",
+    "category": "Office",
+    "target": [
+      "AppImage",
+      "deb",
+      "rpm"
+    ]
+  },
+  "deb": {
+    "depends": [
+      "gconf2",
+      "gconf-service",
+      "libnotify4",
+      "libappindicator1",
+      "libxtst6",
+      "libnss3"
+    ],
+    "priority": "optional"
+  },
+  "rpm": {
+    "depends": [
+      "libXScrnSaver"
+    ]
+  },
+  "appImage": {
+    "license": "LICENSE"
+  }
+}
