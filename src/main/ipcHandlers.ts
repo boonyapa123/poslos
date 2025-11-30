@@ -33,7 +33,8 @@ export function setupIpcHandlers() {
       const transactions = await syncManager.getUnsentTransactions();
       return { success: true, data: transactions.length };
     } catch (error) {
-      return { success: false, error: String(error) };
+      console.error('Error getting unsent count:', error);
+      return { success: true, data: 0 }; // Return 0 instead of error
     }
   });
 
@@ -43,7 +44,8 @@ export function setupIpcHandlers() {
       const lastSyncTime = await syncManager.getLastSyncTime();
       return { success: true, data: lastSyncTime };
     } catch (error) {
-      return { success: false, error: String(error) };
+      console.error('Error getting last sync time:', error);
+      return { success: true, data: null }; // Return null instead of error
     }
   });
 
