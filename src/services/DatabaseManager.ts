@@ -50,7 +50,7 @@ class DatabaseManager {
     }
 
     // สร้าง Sequelize instance with better-sqlite3
-    const BetterSqlite3 = require('better-sqlite3');
+    const BetterSqlite3 = require('better-sqlite3').default || require('better-sqlite3');
     
     this.sequelize = new Sequelize({
       dialect: 'sqlite',
