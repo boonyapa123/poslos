@@ -49,11 +49,14 @@ class DatabaseManager {
       console.log('✅ Database already exists');
     }
 
-    // สร้าง Sequelize instance
+    // สร้าง Sequelize instance with better-sqlite3
+    const BetterSqlite3 = require('better-sqlite3');
+    
     this.sequelize = new Sequelize({
       dialect: 'sqlite',
       storage: finalDbPath,
       logging: false,
+      dialectModule: BetterSqlite3,
       dialectOptions: {
         busyTimeout: 30000
       }
