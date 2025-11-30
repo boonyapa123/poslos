@@ -7,6 +7,7 @@ import { Sequelize } from 'sequelize';
 import * as path from 'path';
 import * as fs from 'fs';
 import { app } from 'electron';
+import Database from 'better-sqlite3';
 
 export async function initDatabase(): Promise<Sequelize> {
   console.log('🚀 Initializing database...');
@@ -39,6 +40,7 @@ export async function initDatabase(): Promise<Sequelize> {
     dialect: 'sqlite',
     storage: dbPath,
     logging: false,
+    dialectModule: Database,
     dialectOptions: {
       busyTimeout: 30000 // 30 seconds timeout
     }
@@ -76,7 +78,8 @@ async function createDatabaseFromTemplate(targetPath: string): Promise<void> {
     const sequelize = new Sequelize({
       dialect: 'sqlite',
       storage: targetPath,
-      logging: false
+      logging: false,
+      dialectModule: Database
     });
     
     // Import models dynamically
@@ -131,7 +134,8 @@ async function tryImportFromExcel(dbPath: string): Promise<void> {
     const sequelize = new Sequelize({
       dialect: 'sqlite',
       storage: dbPath,
-      logging: false
+      logging: false,
+      dialectModule: Database
     });
     
     // Import models dynamically

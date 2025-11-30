@@ -96,10 +96,12 @@ class DatabaseManager {
     } else {
       console.warn('⚠️  Template database not found, creating empty database...');
       // สร้าง database เปล่า
+      const BetterSqlite3 = require('better-sqlite3');
       const tempSequelize = new Sequelize({
         dialect: 'sqlite',
         storage: targetPath,
-        logging: false
+        logging: false,
+        dialectModule: BetterSqlite3
       });
       await tempSequelize.sync({ force: true });
       await tempSequelize.close();
@@ -139,10 +141,12 @@ export function getSharedSequelize(): Sequelize {
   if (!sharedSequelize) {
     // Create temporary instance for initial model definitions
     console.log('⚠️  Creating temporary sequelize instance');
+    const BetterSqlite3 = require('better-sqlite3');
     sharedSequelize = new Sequelize({
       dialect: 'sqlite',
       storage: ':memory:',
-      logging: false
+      logging: false,
+      dialectModule: BetterSqlite3
     });
   }
   return sharedSequelize;
