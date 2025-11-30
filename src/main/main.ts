@@ -97,7 +97,7 @@ async function createWindow() {
     }
   });
 
-  mainWindow.loadFile(path.join(__dirname, '../../src/renderer/index.html'));
+  mainWindow.loadFile(path.join(__dirname, '../index.html'));
 
   // Open DevTools to debug
   mainWindow.webContents.openDevTools();

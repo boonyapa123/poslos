@@ -4,14 +4,14 @@
   "description": "ระบบ POS สำหรับร้านค้าวัสดุก่อสร้าง",
   "main": "dist/main/main.js",
   "scripts": {
-    "build": "tsc && webpack --mode production && cp src/renderer/customer-display.html dist/customer-display.html",
-    "build:dev": "tsc && webpack --mode development && cp src/renderer/customer-display.html dist/customer-display.html",
+    "build": "tsc && webpack --mode production && cp src/renderer/index.html dist/index.html && cp src/renderer/customer-display.html dist/customer-display.html",
+    "build:dev": "tsc && webpack --mode development && cp src/renderer/index.html dist/index.html && cp src/renderer/customer-display.html dist/customer-display.html",
     "start": "npm run build && electron .",
     "dev": "concurrently \"tsc --watch\" \"webpack --watch --mode development\" \"electron .\"",
     "rebuild": "electron-rebuild",
     "postinstall": "electron-builder install-app-deps",
     "import-data": "node import-all-sheets.js",
-    "prepare-template": "node prepare-template.js",
+    "prepare-template": "node scripts/create-template-db.js",
     "create-template": "ts-node scripts/create-template-from-excel.ts",
     "create-template-multilingual": "ts-node scripts/translate-and-create-template.ts",
     "pack": "npm run build && electron-builder --dir",
@@ -73,3 +73,46 @@
     "xlsx": "^0.18.5"
   }
 }
+,
+  "build": {
+    "appId": "com.poslos.app",
+    "productName": "POSLOS",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "pos-template.db",
+        "to": "pos-template.db"
+      },
+      {
+        "from": "ส่งข้อมูลPOS.xlsx",
+        "to": "ส่งข้อมูลPOS.xlsx"
+      }
+    ],
+    "win": {
+      "target": ["nsis"],
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "mac": {
+      "target": ["dmg"],
+      "icon": "assets/icon.icns",
+      "category": "public.app-category.business"
+    },
+    "linux": {
+      "target": ["AppImage"],
+      "icon": "assets/icon.png",
+      "category": "Office"
+    }
+  }
