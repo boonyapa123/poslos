@@ -99,10 +99,8 @@ async function createWindow() {
 
   mainWindow.loadFile(path.join(__dirname, '../../src/renderer/index.html'));
 
-  // Open DevTools in development
-  if (process.env.NODE_ENV === 'development') {
-    mainWindow.webContents.openDevTools();
-  }
+  // Open DevTools to debug
+  mainWindow.webContents.openDevTools();
 
   mainWindow.on('closed', () => {
     mainWindow = null;
