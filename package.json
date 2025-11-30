@@ -71,9 +71,7 @@
     "react-i18next": "^16.3.3",
     "sequelize": "^6.37.7",
     "xlsx": "^0.18.5"
-  }
-}
-,
+  },
   "build": {
     "appId": "com.poslos.app",
     "productName": "POSLOS",
@@ -116,3 +114,4 @@
       "category": "Office"
     }
   }
+}
