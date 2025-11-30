@@ -30,205 +30,27 @@ async function createDatabase() {
   console.log('📦 Creating tables...');
 
   // สร้างตาราง
-  await sequelize.query(`
--- Branches
-CREATE TABLE branches (
-  id TEXT PRIMARY KEY,
-  code TEXT UNIQUE NOT NULL,
-  name TEXT NOT NULL,
-  address TEXT,
-  phone TEXT,
-  isActive INTEGER DEFAULT 1,
-  createdAt TEXT,
-  updatedAt TEXT
-);
+  const tables = [
+    `CREATE TABLE branches (id TEXT PRIMARY KEY, code TEXT UNIQUE NOT NULL, name TEXT NOT NULL, address TEXT, phone TEXT, isActive INTEGER DEFAULT 1, createdAt TEXT, updatedAt TEXT)`,
+    `CREATE TABLE categories (id TEXT PRIMARY KEY, code TEXT UNIQUE NOT NULL, name TEXT NOT NULL, isActive INTEGER DEFAULT 1, createdAt TEXT, updatedAt TEXT)`,
+    `CREATE TABLE departments (id TEXT PRIMARY KEY, code TEXT UNIQUE NOT NULL, name TEXT NOT NULL, isActive INTEGER DEFAULT 1, createdAt TEXT, updatedAt TEXT)`,
+    `CREATE TABLE warehouses (id TEXT PRIMARY KEY, code TEXT UNIQUE NOT NULL, name TEXT NOT NULL, location TEXT, isActive INTEGER DEFAULT 1, createdAt TEXT, updatedAt TEXT)`,
+    `CREATE TABLE products (id TEXT PRIMARY KEY, sku TEXT UNIQUE NOT NULL, name TEXT NOT NULL, nameEn TEXT, nameLo TEXT, category TEXT, description TEXT, isActive INTEGER DEFAULT 1, createdAt TEXT, updatedAt TEXT)`,
+    `CREATE TABLE product_units (id TEXT PRIMARY KEY, productId TEXT NOT NULL, unitCode TEXT NOT NULL, unitName TEXT NOT NULL, unitNameEn TEXT, unitNameLo TEXT, conversionRate REAL DEFAULT 1, barcode TEXT, isBaseUnit INTEGER DEFAULT 1, FOREIGN KEY (productId) REFERENCES products(id))`,
+    `CREATE TABLE product_prices (id TEXT PRIMARY KEY, productId TEXT NOT NULL, unitId TEXT NOT NULL, priceLevel INTEGER DEFAULT 1, price REAL NOT NULL, effectiveDate TEXT, FOREIGN KEY (productId) REFERENCES products(id), FOREIGN KEY (unitId) REFERENCES product_units(id))`,
+    `CREATE TABLE customers (id TEXT PRIMARY KEY, code TEXT UNIQUE NOT NULL, name TEXT NOT NULL, address TEXT, phone TEXT, email TEXT, priceLevel INTEGER DEFAULT 1, creditLimit REAL DEFAULT 0, isActive INTEGER DEFAULT 1, createdAt TEXT, updatedAt TEXT)`,
+    `CREATE TABLE employees (id TEXT PRIMARY KEY, code TEXT UNIQUE NOT NULL, name TEXT NOT NULL, username TEXT UNIQUE, password TEXT, role TEXT DEFAULT 'CASHIER', isActive INTEGER DEFAULT 1, createdAt TEXT, updatedAt TEXT)`,
+    `CREATE TABLE bank_accounts (id TEXT PRIMARY KEY, code TEXT UNIQUE NOT NULL, bankName TEXT NOT NULL, accountNumber TEXT, accountName TEXT, branchName TEXT, isActive INTEGER DEFAULT 1, createdAt TEXT, updatedAt TEXT)`,
+    `CREATE TABLE transactions (id TEXT PRIMARY KEY, transactionNumber TEXT UNIQUE NOT NULL, terminalId TEXT, shiftId TEXT, customerId TEXT, transactionDate TEXT NOT NULL, subtotal REAL NOT NULL, vatAmount REAL DEFAULT 0, vatType TEXT DEFAULT 'INCLUSIVE', vatRate REAL DEFAULT 7, discount REAL DEFAULT 0, grandTotal REAL NOT NULL, paymentMethod TEXT, status TEXT DEFAULT 'COMPLETED', isSynced INTEGER DEFAULT 0, createdAt TEXT, updatedAt TEXT)`,
+    `CREATE TABLE transaction_items (id TEXT PRIMARY KEY, transactionId TEXT NOT NULL, productId TEXT NOT NULL, productSku TEXT NOT NULL, productName TEXT NOT NULL, productNameEn TEXT, productNameLo TEXT, unitId TEXT NOT NULL, unitName TEXT NOT NULL, quantity REAL NOT NULL, unitPrice REAL NOT NULL, lineTotal REAL NOT NULL, discount REAL DEFAULT 0, lineNumber INTEGER NOT NULL, FOREIGN KEY (transactionId) REFERENCES transactions(id))`,
+    `CREATE TABLE shifts (id TEXT PRIMARY KEY, shiftNumber TEXT UNIQUE NOT NULL, terminalId TEXT, startTime TEXT NOT NULL, endTime TEXT, openingCash REAL DEFAULT 0, closingCash REAL DEFAULT 0, totalSales REAL DEFAULT 0, status TEXT DEFAULT 'OPEN', createdAt TEXT, updatedAt TEXT)`,
+    `CREATE TABLE configurations (key TEXT PRIMARY KEY, value TEXT, description TEXT, createdAt TEXT, updatedAt TEXT)`,
+    `CREATE TABLE sync_logs (id TEXT PRIMARY KEY, syncType TEXT NOT NULL, status TEXT NOT NULL, recordCount INTEGER DEFAULT 0, errorMessage TEXT, syncedAt TEXT NOT NULL)`
+  ];
 
--- Categories
-CREATE TABLE categories (
-  id TEXT PRIMARY KEY,
-  code TEXT UNIQUE NOT NULL,
-  name TEXT NOT NULL,
-  isActive INTEGER DEFAULT 1,
-  createdAt TEXT,
-  updatedAt TEXT
-);
-
--- Departments
-CREATE TABLE departments (
-  id TEXT PRIMARY KEY,
-  code TEXT UNIQUE NOT NULL,
-  name TEXT NOT NULL,
-  isActive INTEGER DEFAULT 1,
-  createdAt TEXT,
-  updatedAt TEXT
-);
-
--- Warehouses
-CREATE TABLE warehouses (
-  id TEXT PRIMARY KEY,
-  code TEXT UNIQUE NOT NULL,
-  name TEXT NOT NULL,
-  location TEXT,
-  isActive INTEGER DEFAULT 1,
-  createdAt TEXT,
-  updatedAt TEXT
-);
-
--- Products
-CREATE TABLE products (
-  id TEXT PRIMARY KEY,
-  sku TEXT UNIQUE NOT NULL,
-  name TEXT NOT NULL,
-  nameEn TEXT,
-  nameLo TEXT,
-  category TEXT,
-  description TEXT,
-  isActive INTEGER DEFAULT 1,
-  createdAt TEXT,
-  updatedAt TEXT
-);
-
--- Product Units
-CREATE TABLE product_units (
-  id TEXT PRIMARY KEY,
-  productId TEXT NOT NULL,
-  unitCode TEXT NOT NULL,
-  unitName TEXT NOT NULL,
-  unitNameEn TEXT,
-  unitNameLo TEXT,
-  conversionRate REAL DEFAULT 1,
-  barcode TEXT,
-  isBaseUnit INTEGER DEFAULT 1,
-  FOREIGN KEY (productId) REFERENCES products(id)
-);
-
--- Product Prices
-CREATE TABLE product_prices (
-  id TEXT PRIMARY KEY,
-  productId TEXT NOT NULL,
-  unitId TEXT NOT NULL,
-  priceLevel INTEGER DEFAULT 1,
-  price REAL NOT NULL,
-  effectiveDate TEXT,
-  FOREIGN KEY (productId) REFERENCES products(id),
-  FOREIGN KEY (unitId) REFERENCES product_units(id)
-);
-
--- Customers
-CREATE TABLE customers (
-  id TEXT PRIMARY KEY,
-  code TEXT UNIQUE NOT NULL,
-  name TEXT NOT NULL,
-  address TEXT,
-  phone TEXT,
-  email TEXT,
-  priceLevel INTEGER DEFAULT 1,
-  creditLimit REAL DEFAULT 0,
-  isActive INTEGER DEFAULT 1,
-  createdAt TEXT,
-  updatedAt TEXT
-);
-
--- Employees
-CREATE TABLE employees (
-  id TEXT PRIMARY KEY,
-  code TEXT UNIQUE NOT NULL,
-  name TEXT NOT NULL,
-  username TEXT UNIQUE,
-  password TEXT,
-  role TEXT DEFAULT 'CASHIER',
-  isActive INTEGER DEFAULT 1,
-  createdAt TEXT,
-  updatedAt TEXT
-);
-
--- Bank Accounts
-CREATE TABLE bank_accounts (
-  id TEXT PRIMARY KEY,
-  code TEXT UNIQUE NOT NULL,
-  bankName TEXT NOT NULL,
-  accountNumber TEXT,
-  accountName TEXT,
-  branchName TEXT,
-  isActive INTEGER DEFAULT 1,
-  createdAt TEXT,
-  updatedAt TEXT
-);
-
--- Transactions
-CREATE TABLE transactions (
-  id TEXT PRIMARY KEY,
-  transactionNumber TEXT UNIQUE NOT NULL,
-  terminalId TEXT,
-  shiftId TEXT,
-  customerId TEXT,
-  transactionDate TEXT NOT NULL,
-  subtotal REAL NOT NULL,
-  vatAmount REAL DEFAULT 0,
-  vatType TEXT DEFAULT 'INCLUSIVE',
-  vatRate REAL DEFAULT 7,
-  discount REAL DEFAULT 0,
-  grandTotal REAL NOT NULL,
-  paymentMethod TEXT,
-  status TEXT DEFAULT 'COMPLETED',
-  isSynced INTEGER DEFAULT 0,
-  createdAt TEXT,
-  updatedAt TEXT
-);
-
--- Transaction Items
-CREATE TABLE transaction_items (
-  id TEXT PRIMARY KEY,
-  transactionId TEXT NOT NULL,
-  productId TEXT NOT NULL,
-  productSku TEXT NOT NULL,
-  productName TEXT NOT NULL,
-  productNameEn TEXT,
-  productNameLo TEXT,
-  unitId TEXT NOT NULL,
-  unitName TEXT NOT NULL,
-  quantity REAL NOT NULL,
-  unitPrice REAL NOT NULL,
-  lineTotal REAL NOT NULL,
-  discount REAL DEFAULT 0,
-  lineNumber INTEGER NOT NULL,
-  FOREIGN KEY (transactionId) REFERENCES transactions(id)
-);
-
--- Shifts
-CREATE TABLE shifts (
-  id TEXT PRIMARY KEY,
-  shiftNumber TEXT UNIQUE NOT NULL,
-  terminalId TEXT,
-  startTime TEXT NOT NULL,
-  endTime TEXT,
-  openingCash REAL DEFAULT 0,
-  closingCash REAL DEFAULT 0,
-  totalSales REAL DEFAULT 0,
-  status TEXT DEFAULT 'OPEN',
-  createdAt TEXT,
-  updatedAt TEXT
-);
-
--- Configuration
-CREATE TABLE configurations (
-  key TEXT PRIMARY KEY,
-  value TEXT,
-  description TEXT,
-  createdAt TEXT,
-  updatedAt TEXT
-);
-
--- Sync Logs
-CREATE TABLE sync_logs (
-  id TEXT PRIMARY KEY,
-  syncType TEXT NOT NULL,
-  status TEXT NOT NULL,
-  recordCount INTEGER DEFAULT 0,
-  errorMessage TEXT,
-  syncedAt TEXT NOT NULL
-);
-  `);
+  for (const sql of tables) {
+    await sequelize.query(sql);
+  }
 
   console.log('✅ Tables created');
 
