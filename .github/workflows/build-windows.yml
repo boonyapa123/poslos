@@ -21,7 +21,7 @@ jobs:
       run: npm install
     
     - name: Rebuild native modules
-      run: npm rebuild better-sqlite3
+      run: npm rebuild sqlite3
     
     - name: Create database template
       run: npm run prepare-template
