@@ -76,6 +76,11 @@
   "build": {
     "appId": "com.poslos.app",
     "productName": "POSLOS",
+    "asar": true,
+    "asarUnpack": [
+      "pos-template.db",
+      "ส่งข้อมูลPOS.xlsx"
+    ],
     "directories": {
       "output": "release"
     },
