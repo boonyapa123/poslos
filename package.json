@@ -17,7 +17,7 @@
     "pack": "npm run build && electron-builder --dir",
     "dist": "npm run prepare-template && npm run build && electron-builder",
     "build:win": "npm run prepare-template && npm run build && electron-builder --win",
-    "build:win-ci": "npm run build && electron-builder --win",
+    "build:win-ci": "npm run prepare-template && npm run build && electron-builder --win",
     "build:mac": "npm run prepare-template && npm run build && electron-builder --mac",
     "build:linux": "npm run prepare-template && npm run build && electron-builder --linux",
     "build:all": "npm run prepare-template && npm run build && electron-builder -mwl",
@@ -78,7 +78,6 @@
     "productName": "POSLOS",
     "asar": true,
     "asarUnpack": [
-      "pos-template.db",
       "ส่งข้อมูลPOS.xlsx"
     ],
     "directories": {
@@ -90,10 +89,6 @@
       "package.json"
     ],
     "extraResources": [
-      {
-        "from": "pos-template.db",
-        "to": "pos-template.db"
-      },
       {
         "from": "ส่งข้อมูลPOS.xlsx",
         "to": "ส่งข้อมูลPOS.xlsx"
