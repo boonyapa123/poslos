@@ -1,5 +1,6 @@
 import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
+import * as fs from 'fs';
 import DatabaseManager from '../services/DatabaseManager';
 import APIClient from '../services/APIClient';
 import Configuration from '../models/Configuration';
@@ -75,9 +76,18 @@ async function createWindow() {
     
     if (productCount === 0) {
       console.log('📦 Database is empty, importing data from Excel...');
-      const { importFromExcel } = require('./importExcel');
-      const excelPath = path.join(__dirname, '../../ส่งข้อมูลPOS.xlsx');
-      await importFromExcel(excelPath);
+      try {
+        const { importFromExcel } = require('./importExcel');
+        const excelPath = path.join(__dirname, '../../ส่งข้อมูลPOS.xlsx');
+        if (fs.existsSync(excelPath)) {
+          await importFromExcel(excelPath);
+          console.log('✅ Data imported from Excel');
+        } else {
+          console.warn('⚠️  Excel file not found at:', excelPath);
+        }
+      } catch (error) {
+        console.error('❌ Error importing from Excel:', error);
+      }
     } else {
       console.log(`✅ Database has ${productCount} products`);
     }

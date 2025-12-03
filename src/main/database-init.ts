@@ -60,53 +60,9 @@ export async function initDatabase(): Promise<Sequelize> {
 }
 
 async function createDatabaseFromTemplate(targetPath: string): Promise<void> {
-  // ตำแหน่งไฟล์ template - ลองหาจากหลายที่
-  const possiblePaths = [
-    // Production build paths
-    path.join(process.resourcesPath, 'pos-template.db'),
-    path.join(process.resourcesPath, '..', 'pos-template.db'),
-    // Development paths
-    path.join(__dirname, '../../pos-template.db'),
-    path.join(__dirname, '../../../pos-template.db'),
-    path.join(process.cwd(), 'pos-template.db'),
-    'pos-template.db'
-  ];
-  
-  let templatePath = '';
-  for (const p of possiblePaths) {
-    console.log('🔍 Checking:', p);
-    if (fs.existsSync(p)) {
-      templatePath = p;
-      console.log('✅ Found template at:', p);
-      break;
-    }
-  }
-  
-  // ตรวจสอบว่ามีไฟล์ template หรือไม่
-  if (!templatePath || !fs.existsSync(templatePath)) {
-    console.warn('⚠️  Template database not found, creating from Excel...');
-    
-    // สร้าง database จาก Excel
-    await createDatabaseFromExcel(targetPath);
-    
-    return;
-  }
-  
-  // Copy template database
-  console.log('📋 Copying template database from:', templatePath);
-  console.log('📋 Copying to:', targetPath);
-  
-  try {
-    fs.copyFileSync(templatePath, targetPath);
-    
-    // แสดงขนาดไฟล์
-    const stats = fs.statSync(targetPath);
-    const fileSizeMB = (stats.size / (1024 * 1024)).toFixed(2);
-    console.log(`✅ Database created from template (${fileSizeMB} MB)`);
-  } catch (error) {
-    console.error('❌ Error copying template:', error);
-    throw error;
-  }
+  // ไม่มี template file แล้ว ให้สร้างจาก Excel เลย
+  console.warn('📦 Creating database from Excel...');
+  await createDatabaseFromExcel(targetPath);
 }
 
 async function createDatabaseFromExcel(dbPath: string): Promise<void> {
