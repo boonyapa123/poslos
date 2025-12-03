@@ -173,6 +173,12 @@ const SalesScreen: React.FC = () => {
       // Reset
       setProductInput('');
       setQuantityMultiplier(1);
+      
+      // Focus back to input
+      const inputElement = document.querySelector('input[placeholder*="รหัสสินค้า"]') as HTMLInputElement;
+      if (inputElement) {
+        setTimeout(() => inputElement.focus(), 0);
+      }
     } catch (error) {
       console.error('Error adding product:', error);
       alert('เกิดข้อผิดพลาดในการเพิ่มสินค้า');
