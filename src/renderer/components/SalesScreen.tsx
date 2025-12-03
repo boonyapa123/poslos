@@ -40,6 +40,46 @@ const SalesScreen: React.FC = () => {
         removeItem(lastItem.lineNumber);
       }
     }, 'Delete Last Item');
+    
+    hotkeyManager.registerHotkey('ctrl+delete', () => {
+      // Clear all items (ใส่หลักสูตรค้า)
+      clearBill();
+    }, 'Clear All Items');
+    
+    hotkeyManager.registerHotkey('pagedown', () => {
+      // Exit bill (ออกบิลขาย)
+      if (currentBill.items.length > 0) {
+        setShowPayment(true);
+      }
+    }, 'Exit Bill');
+    
+    hotkeyManager.registerHotkey('f10', () => {
+      // Calculator (เครื่องคิดเลข) - open system calculator
+      const { shell } = window.require('electron');
+      if (process.platform === 'win32') {
+        shell.openPath('calc.exe');
+      } else if (process.platform === 'darwin') {
+        shell.openPath('/Applications/Calculator.app');
+      }
+    }, 'Calculator');
+    
+    hotkeyManager.registerHotkey('insert', () => {
+      // Reprint last receipt (ฟิมพบิลซ้ำ)
+      ipcRenderer.invoke('printer:reprint').catch((err: any) => {
+        console.error('Error reprinting:', err);
+      });
+    }, 'Reprint Receipt');
+    
+    hotkeyManager.registerHotkey('home', () => {
+      // Home screen (บิดโปรแกรมขาย) - could navigate to home
+      // For now, just clear the bill
+      clearBill();
+    }, 'Home Screen');
+    
+    hotkeyManager.registerHotkey('ctrl+m', () => {
+      // Cancel bill (ยกเลิกหมดบิล)
+      clearBill();
+    }, 'Cancel Bill');
 
     // Handle keyboard input for product code
     const handleKeyDown = (e: KeyboardEvent) => {

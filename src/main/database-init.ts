@@ -61,15 +61,29 @@ export async function initDatabase(): Promise<Sequelize> {
 
 async function createDatabaseFromTemplate(targetPath: string): Promise<void> {
   // ตำแหน่งไฟล์ template
-  const templatePath = path.join(
-    process.resourcesPath,
+  // Try multiple paths for cross-platform compatibility
+  const possiblePaths = [
+    path.join(process.resourcesPath, 'pos-template.db'),
+    path.join(process.resourcesPath, '..', 'pos-template.db'),
+    path.join(__dirname, '../../pos-template.db'),
+    path.join(__dirname, '../../../pos-template.db'),
     'pos-template.db'
-  );
+  ];
+  
+  let templatePath = '';
+  for (const p of possiblePaths) {
+    if (fs.existsSync(p)) {
+      templatePath = p;
+      break;
+    }
+  }
   
   console.log('📁 Template path:', templatePath);
+  console.log('📁 process.resourcesPath:', process.resourcesPath);
+  console.log('📁 __dirname:', __dirname);
   
   // ตรวจสอบว่ามีไฟล์ template หรือไม่
-  if (!fs.existsSync(templatePath)) {
+  if (!templatePath || !fs.existsSync(templatePath)) {
     console.warn('⚠️  Template database not found, creating empty database...');
     
     // สร้าง database เปล่า (จะใช้ models จาก DatabaseManager)
